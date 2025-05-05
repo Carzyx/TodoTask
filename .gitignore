@@ -1,0 +1,111 @@
+# Archivos y directorios de compilación
+bin/
+obj/
+out/
+publish/
+*.aot.*
+
+# Archivos de ambiente y configuración local
+appsettings.Development.json
+*.Development.json
+.env
+.env.local
+*.local.json
+
+# Archivos de Visual Studio y VSCode
+.vs/
+.vscode/
+*.suo
+*.user
+*.sln.docstates
+.idea/
+
+# Archivos de log y diagnóstico
+*.log
+*.log.*
+logs/
+diagnostics/
+
+# Archivos de pruebas
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+
+# Archivos temporales del sistema
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# Dependencias y paquetes
+*.nuget.props
+*.nuget.targets
+packages/
+*.nupkg
+
+# Archivos de perfil y rendimiento
+*.psess
+*.vsp
+*.vspx
+*.sap
+
+# Archivos de compilación generados
+*.dll
+*.exe
+*.pdb
+*.dll.manifest
+*.application
+
+# Archivos de caché
+*.cache
+.mfractor/
+.local-chromium/
+
+# Archivos específicos de AOT
+*.aot
+*.aot.cs
+CompiledProgram.aot
+
+# Archivos sensibles o de secretos
+secrets.json
+*.pfx
+*.key
+
+# Archivos de IDE específicos
+*.suo
+*.ncrunch*
+*.resharper
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+
+# Archivos de registro de instalación
+InstallLog.*
+
+# Directorios de caché de herramientas
+.dotnet/
+.nuget/
+
+# Archivos de perfil de publicación
+*.pubxml
+*.publishproj
+
+# Carpetas de salida de publicación web
+[Pp]ublish/
+
+# Ignorar carpetas de dependencias de frontend (si aplica)
+node_modules/
+wwwroot/lib/
+
+# Archivos de backup
+*.bak
+*.backup
+*Backup*/
+
+# Archivos específicos de Windows
+$RECYCLE.BIN/
+
+# Archivos específicos de macOS
+.AppleDouble
+.LSOverride
+Icon
