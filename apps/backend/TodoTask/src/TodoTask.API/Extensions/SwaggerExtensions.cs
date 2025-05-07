@@ -32,8 +32,17 @@ public static class SwaggerExtensions
                 {
                     Name = "Miguel Angel Archilla",
                     Email = "miguel@support.com"
+                },
+                License = new OpenApiLicense
+                {
+                    Name = "MIT",
+                    Url = new Uri("https://opensource.org/licenses/MIT")
                 }
             });
+            
+            c.EnableAnnotations();
+            
+            c.UseInlineDefinitionsForEnums();
 
             c.CustomSchemaIds(type => type.FullName);
         });
