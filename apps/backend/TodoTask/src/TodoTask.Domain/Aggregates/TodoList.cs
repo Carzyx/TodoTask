@@ -20,9 +20,7 @@ public class TodoList : ITodoList
             throw new InvalidOperationException($"La categoría '{category}' no es válida.");
         }
 
-        var existingItem = _repository.GetItemById(id);
-
-        if (existingItem != null)
+        if (_repository.ExistsItemById(id))
         {
             throw new InvalidOperationException($"Ya existe un TodoItem con Id {id}.");
         }

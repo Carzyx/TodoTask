@@ -110,6 +110,33 @@ public class TodoListRepositoryTests
     {
         Assert.Throws<InvalidOperationException>(() => _repository.GetItemById(999));
     }
+    
+    [Fact]
+    public void ExistsItemById_WithExistingItem_ShouldReturnTrue()
+    {
+        var memoryCache = new MemoryCache(new MemoryCacheOptions());
+        var repository = new TodoListRepository(memoryCache);
+            
+        const int itemId = 10;
+        repository.SaveItem(new TodoItem(itemId, "Test Title", "Test Description", "Entrantes"));
+            
+        var result = repository.ExistsItemById(itemId);
+            
+        Assert.True(result);
+    }
+        
+    [Fact]
+    public void ExistsItemById_WithNonExistingItem_ShouldReturnFalse()
+    {
+        var memoryCache = new MemoryCache(new MemoryCacheOptions());
+        var repository = new TodoListRepository(memoryCache);
+            
+        const int nonExistingItemId = 999;
+            
+        var result = repository.ExistsItemById(nonExistingItemId);
+            
+        Assert.False(result);
+    }
 
     [Fact]
     public void GetAllItems_ShouldReturnAllSavedItems()

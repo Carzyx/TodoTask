@@ -7,7 +7,10 @@ namespace TodoTask.Infrastructure.Repositories;
 public class TodoListRepository : ITodoListRepository
 {
     private readonly IMemoryCache _cache;
-    private readonly List<string> _categories = ["Entrantes", "Platos principales", "Postres", "Bebidas", "Menú del día"];
+
+    private readonly List<string> _categories =
+        ["Entrantes", "Platos principales", "Postres", "Bebidas", "Menú del día"];
+
     private const string CacheKeyAllItems = "TodoItems_All";
     private const string CacheKeyLastId = "TodoItems_LastId";
 
@@ -87,6 +90,12 @@ public class TodoListRepository : ITodoListRepository
         return item;
     }
 
+    public bool ExistsItemById(int id)
+    {
+        var items = GetItemsCollection();
+        return items.Any(i => i.Id == id);
+    }
+
     public IEnumerable<TodoItem> GetAllItems()
     {
         var items = GetItemsCollection();
@@ -95,7 +104,7 @@ public class TodoListRepository : ITodoListRepository
 
     private void InitializeCache()
     {
-        if (_cache.TryGetValue(CacheKeyAllItems, out List<TodoItem>? existingItems) && 
+        if (_cache.TryGetValue(CacheKeyAllItems, out List<TodoItem>? existingItems) &&
             existingItems is { Count: > 0 })
         {
             return;
@@ -120,13 +129,14 @@ public class TodoListRepository : ITodoListRepository
             items = [];
             _cache.Set(CacheKeyAllItems, items);
         }
-            
+
         return items;
     }
 
     private static TodoItem CreatePaellaExample()
     {
-        var item = new TodoItem(1, "Paella para mesa 5", "Paella valenciana para 4 personas, sin marisco", "Platos principales");
+        var item = new TodoItem(1, "Paella para mesa 5", "Paella valenciana para 4 personas, sin marisco",
+            "Platos principales");
         item.AddProgression(new DateTime(2025, 3, 18, 13, 15, 0), 10m);
         item.AddProgression(new DateTime(2025, 3, 18, 13, 30, 0), 10m);
         item.AddProgression(new DateTime(2025, 3, 18, 13, 55, 0), 20m);
@@ -136,7 +146,8 @@ public class TodoListRepository : ITodoListRepository
 
     private static TodoItem CreateTartaExample()
     {
-        var item = new TodoItem(2, "Tarta de queso para mesa 3", "Tarta de queso con mermelada de frutos rojos, sin gluten", "Postres");
+        var item = new TodoItem(2, "Tarta de queso para mesa 3",
+            "Tarta de queso con mermelada de frutos rojos, sin gluten", "Postres");
         item.AddProgression(new DateTime(2025, 3, 18, 13, 40, 0), 25m);
         item.AddProgression(new DateTime(2025, 3, 18, 13, 55, 0), 25m);
         return item;
@@ -144,7 +155,8 @@ public class TodoListRepository : ITodoListRepository
 
     private static TodoItem CreateEnsaladaExample()
     {
-        var item = new TodoItem(3, "Ensalada mediterránea para mesa 7", "Ensalada con tomate, pepino, cebolla, aceitunas y queso feta", "Entrantes");
+        var item = new TodoItem(3, "Ensalada mediterránea para mesa 7",
+            "Ensalada con tomate, pepino, cebolla, aceitunas y queso feta", "Entrantes");
         item.AddProgression(new DateTime(2025, 3, 18, 14, 00, 0), 10m);
         return item;
     }

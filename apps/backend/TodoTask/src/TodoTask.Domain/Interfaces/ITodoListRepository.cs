@@ -9,5 +9,6 @@ public interface ITodoListRepository
     void SaveItem(TodoItem item);
     void DeleteItem(int id);
     TodoItem GetItemById(int id);
+    bool ExistsItemById(int id);
     IEnumerable<TodoItem> GetAllItems();
 }

@@ -13,6 +13,31 @@ public class TodoListTests : IClassFixture<TodoListFixture>
     }
 
     [Fact]
+    public void AddItem_WithValidData_ShouldAddSuccessfully()
+    {
+        _fixture.MockRepository.Setup(r => r.ExistsItemById(It.IsAny<int>())).Returns(false);
+
+        _fixture.TodoList.AddItem(1, "Test Title", "Test Description", "Entrantes");
+
+        _fixture.MockRepository.Verify(r => r.SaveItem(It.Is<TodoItem>(i =>
+            i.Id == 1 &&
+            i.Title == "Test Title" &&
+            i.Description == "Test Description" &&
+            i.Category == "Entrantes")), Times.Once);
+    }
+
+    [Fact]
+    public void AddItem_WithExistingId_ShouldThrowException()
+    {
+        _fixture.MockRepository.Setup(r => r.ExistsItemById(1)).Returns(true);
+
+        var exception = Assert.Throws<InvalidOperationException>(() =>
+            _fixture.TodoList.AddItem(1, "Test Title", "Test Description", "Entrantes"));
+
+        Assert.Contains("Ya existe un TodoItem con Id", exception.Message);
+    }
+
+    [Fact]
     public void AddItem_WithValidData_ShouldCallRepositorySaveItem()
     {
         const int id = 1;
@@ -54,8 +79,8 @@ public class TodoListTests : IClassFixture<TodoListFixture>
         var existingId = 1;
         var existingItem = new TodoItem(existingId, "Existing Title", "Existing Description", "Entrantes");
 
-        _fixture.MockRepository.Setup(r => r.GetItemById(existingId))
-            .Returns(existingItem);
+        _fixture.MockRepository.Setup(r => r.ExistsItemById(existingId))
+            .Returns(true);
 
         var exception = Assert.Throws<InvalidOperationException>(() =>
             _fixture.TodoList.AddItem(existingId, "Test Title", "Test Description", "Entrantes"));
