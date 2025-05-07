@@ -95,8 +95,8 @@ namespace TodoTask.API.Controllers
         {
             try
             {
-                _todoTaskService.ShowAllTodos();
-                return Ok("Todos printed to console");
+                var todos = _todoTaskService.GetAllTodos();
+                return Ok(todos);
             }
             catch (Exception ex)
             {

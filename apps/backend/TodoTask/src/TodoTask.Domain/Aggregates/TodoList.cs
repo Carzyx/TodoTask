@@ -5,7 +5,6 @@ namespace TodoTask.Domain.Aggregates;
 
 public class TodoList : ITodoList
 {
-    private readonly List<TodoItem> _items = [];
     private readonly ITodoListRepository _repository;
 
     public TodoList(ITodoListRepository repository)
@@ -21,69 +20,51 @@ public class TodoList : ITodoList
             throw new InvalidOperationException($"La categoría '{category}' no es válida.");
         }
 
-        if (_items.Any(i => i.Id == id))
+        try 
         {
-            throw new InvalidOperationException($"Ya existe un TodoItem con Id {id}.");
+            var existingItem = _repository.GetItemById(id);
+            if (existingItem != null)
+            {
+                throw new InvalidOperationException($"Ya existe un TodoItem con Id {id}.");
+            }
+        }
+        catch (InvalidOperationException) 
+        {
+            // Si salta esta excepción significa que no existe, lo cual es correcto
         }
 
-        _items.Add(new TodoItem(id, title, description, category));
+        var newItem = new TodoItem(id, title, description, category);
+        _repository.SaveItem(newItem);
     }
 
     public void UpdateItem(int id, string description)
     {
-        var item = GetItemById(id);
+        var item = _repository.GetItemById(id);
         item.UpdateDescription(description);
+        _repository.SaveItem(item);
     }
 
     public void RemoveItem(int id)
     {
-        var item = GetItemById(id);
+        var item = _repository.GetItemById(id);
             
         if (item.Progressions.Sum(p => p.Percent) > 50m)
         {
             throw new InvalidOperationException("No se puede borrar un TodoItem con más del 50% realizado.");
         }
             
-        _items.Remove(item);
+        _repository.DeleteItem(id);
     }
 
     public void RegisterProgression(int id, DateTime dateTime, decimal percent)
     {
-        var item = GetItemById(id);
+        var item = _repository.GetItemById(id);
         item.AddProgression(dateTime, percent);
+        _repository.SaveItem(item);
     }
-
-    public void PrintItems()
+    
+    public IEnumerable<TodoItem> GetAllItems()
     {
-        foreach (var item in _items.OrderBy(i => i.Id))
-        {
-            Console.WriteLine($"{item.Id}) {item.Title} - {item.Description} ({item.Category}) Completed:{item.IsCompleted}");
-                
-            for (var i = 0; i < item.Progressions.Count; i++)
-            {
-                var progression = item.Progressions[i];
-                var accumulatedPercent = item.GetAccumulatedPercentAt(i);
-                var progressBar = GenerateProgressBar(accumulatedPercent);
-                    
-                Console.WriteLine($"{progression.Date} - {accumulatedPercent}% |{progressBar}|");
-            }
-        }
-    }
-
-    private string GenerateProgressBar(decimal percent)
-    {
-        int barLength = 50;
-        int filledLength = (int)(barLength * percent / 100);
-        return new string('O', filledLength);
-    }
-
-    private TodoItem GetItemById(int id)
-    {
-        var item = _items.FirstOrDefault(i => i.Id == id);
-        if (item == null)
-        {
-            throw new InvalidOperationException($"No existe un TodoItem con Id {id}.");
-        }
-        return item;
+        return _repository.GetAllItems();
     }
 }

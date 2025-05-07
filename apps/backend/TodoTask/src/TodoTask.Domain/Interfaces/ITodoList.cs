@@ -1,3 +1,5 @@
+using TodoTask.Domain.Entities;
+
 namespace TodoTask.Domain.Interfaces;
 
 public interface ITodoList
@@ -6,5 +8,5 @@ public interface ITodoList
     void UpdateItem(int id, string description);
     void RemoveItem(int id);
     void RegisterProgression(int id, DateTime dateTime, decimal percent);
-    void PrintItems();
+    IEnumerable<TodoItem> GetAllItems();
 }
