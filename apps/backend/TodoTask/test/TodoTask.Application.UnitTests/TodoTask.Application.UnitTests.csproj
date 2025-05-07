@@ -20,7 +20,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\apps\backend\TodoTask\src\TodoTask.Domain\TodoTask.Domain.csproj" />
+      <ProjectReference Include="..\..\src\TodoTask.Application\TodoTask.Application.csproj" />
     </ItemGroup>
 
 </Project>
