@@ -20,17 +20,11 @@ public class TodoList : ITodoList
             throw new InvalidOperationException($"La categoría '{category}' no es válida.");
         }
 
-        try 
+        var existingItem = _repository.GetItemById(id);
+
+        if (existingItem != null)
         {
-            var existingItem = _repository.GetItemById(id);
-            if (existingItem != null)
-            {
-                throw new InvalidOperationException($"Ya existe un TodoItem con Id {id}.");
-            }
-        }
-        catch (InvalidOperationException) 
-        {
-            // Si salta esta excepción significa que no existe, lo cual es correcto
+            throw new InvalidOperationException($"Ya existe un TodoItem con Id {id}.");
         }
 
         var newItem = new TodoItem(id, title, description, category);
@@ -47,12 +41,12 @@ public class TodoList : ITodoList
     public void RemoveItem(int id)
     {
         var item = _repository.GetItemById(id);
-            
+
         if (item.Progressions.Sum(p => p.Percent) > 50m)
         {
             throw new InvalidOperationException("No se puede borrar un TodoItem con más del 50% realizado.");
         }
-            
+
         _repository.DeleteItem(id);
     }
 
@@ -62,7 +56,7 @@ public class TodoList : ITodoList
         item.AddProgression(dateTime, percent);
         _repository.SaveItem(item);
     }
-    
+
     public IEnumerable<TodoItem> GetAllItems()
     {
         return _repository.GetAllItems();

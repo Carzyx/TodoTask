@@ -3,105 +3,104 @@ using Microsoft.AspNetCore.Mvc;
 using TodoTask.API.Request;
 using TodoTask.Application.Interfaces;
 
-namespace TodoTask.API.Controllers
+namespace TodoTask.API.Controllers;
+
+[ApiController]
+[ApiVersion("1")]
+[Route("v{version:apiVersion}/[controller]")]
+[Produces("application/json")]
+public class TodoController : ControllerBase
 {
-    [ApiController]
-    [ApiVersion("1")]
-    [Route("v{version:apiVersion}/[controller]")]
-    [Produces("application/json")]
-    public class TodoController : ControllerBase
+    private readonly ITodoTaskService _todoTaskService;
+
+    public TodoController(ITodoTaskService todoTaskService)
     {
-        private readonly ITodoTaskService _todoTaskService;
+        _todoTaskService = todoTaskService ?? throw new ArgumentNullException(nameof(todoTaskService));
+    }
 
-        public TodoController(ITodoTaskService todoTaskService)
+    [HttpPost]
+    public IActionResult CreateTodo([FromBody] CreateTodoRequest request)
+    {
+        try
         {
-            _todoTaskService = todoTaskService ?? throw new ArgumentNullException(nameof(todoTaskService));
+            _todoTaskService.CreateTodo(request.Title, request.Description, request.Category);
+            return Ok();
         }
-
-        [HttpPost]
-        public IActionResult CreateTodo([FromBody] CreateTodoRequest request)
+        catch (InvalidOperationException ex)
         {
-            try
-            {
-                _todoTaskService.CreateTodo(request.Title, request.Description, request.Category);
-                return Ok();
-            }
-            catch (InvalidOperationException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            return BadRequest(ex.Message);
         }
-
-        [HttpPut("{id}")]
-        public IActionResult UpdateTodo(int id, [FromBody] UpdateTodoRequest request)
+        catch (Exception ex)
         {
-            try
-            {
-                _todoTaskService.UpdateTodo(id, request.Description);
-                return Ok();
-            }
-            catch (InvalidOperationException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            return StatusCode(500, ex.Message);
         }
+    }
 
-        [HttpDelete("{id}")]
-        public IActionResult DeleteTodo(int id)
+    [HttpPut("{id}")]
+    public IActionResult UpdateTodo(int id, [FromBody] UpdateTodoRequest request)
+    {
+        try
         {
-            try
-            {
-                _todoTaskService.DeleteTodo(id);
-                return Ok();
-            }
-            catch (InvalidOperationException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            _todoTaskService.UpdateTodo(id, request.Description);
+            return Ok();
         }
-
-        [HttpPost("{id}/progression")]
-        public IActionResult AddProgression(int id, [FromBody] AddProgressionRequest request)
+        catch (InvalidOperationException ex)
         {
-            try
-            {
-                _todoTaskService.AddProgression(id, request.DateTime, request.Percent);
-                return Ok();
-            }
-            catch (InvalidOperationException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            return BadRequest(ex.Message);
         }
-
-        [HttpGet]
-        public IActionResult GetAllTodos()
+        catch (Exception ex)
         {
-            try
-            {
-                var todos = _todoTaskService.GetAllTodos();
-                return Ok(todos);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            return StatusCode(500, ex.Message);
+        }
+    }
+
+    [HttpDelete("{id}")]
+    public IActionResult DeleteTodo(int id)
+    {
+        try
+        {
+            _todoTaskService.DeleteTodo(id);
+            return Ok();
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.Message);
+        }
+    }
+
+    [HttpPost("{id}/progression")]
+    public IActionResult AddProgression(int id, [FromBody] AddProgressionRequest request)
+    {
+        try
+        {
+            _todoTaskService.AddProgression(id, request.DateTime, request.Percent);
+            return Ok();
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.Message);
+        }
+    }
+
+    [HttpGet]
+    public IActionResult GetAllTodos()
+    {
+        try
+        {
+            var todos = _todoTaskService.GetAllTodos();
+            return Ok(todos);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.Message);
         }
     }
 }
