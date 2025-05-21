@@ -55,7 +55,6 @@ packages/
 *.exe
 *.pdb
 *.dll.manifest
-*.application
 
 # Archivos de caché
 *.cache
